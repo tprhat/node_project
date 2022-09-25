@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+    
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"> 
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <title><%= title %></title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+    crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+    integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+    crossorigin=""></script>
+
+    <style>
+        html, body, #mapid {
+            height: 100vh;
+            width: 100vw;
+            margin: 0;
+        }
+
+    </style>
+    <script>
+        function provjeraKartice(x, y) {
+            let kartice = <%- JSON.stringify(kartice) %>;
+            let lokacije = <%- JSON.stringify(lokacije) %>;
+
+            let tmpKartica;
+            let tmpLokacija;
+
+            for(let lokacija of lokacije) {
+                if (lokacija.x > x - 0.0005 && lokacija.x < x + 0.0005 && lokacija.y > y - 0.0005 && lokacija.y < y + 0.0005){
+                    tmpLokacija = lokacija
+                    break
+                } 
+            }
+
+            if(tmpLokacija){
+                
+                for(let kartica of kartice){
+                    if(kartica.imeLokacije == tmpLokacija.imeLokacije) {
+                        tmpKartica = kartica
+                        break
+                    }
+                }
+
+                if(!tmpKartica) {
+                    postKartica(tmpLokacija.koordinate, "DA")
+                }else if(tmpKartica.hp != 100){
+                    postKartica(tmpLokacija.koordinate, "NE")
+                }
+            }
+        }
+
+        function postKartica(koordinate, novaKart){
+
+            var form = document.createElement("form");
+
+            var koord = document.createElement("input");
+            var nova = document.createElement("input");
+
+            form.method = "POST"
+            form.action = "/igrac/map"
+
+            koord.value = koordinate;
+            koord.name = "koordinate";
+            form.appendChild(koord)
+
+            nova.value = novaKart;
+            nova.name = "nova"
+            form.appendChild(nova)
+
+            document.body.appendChild(form)
+
+            form.submit()
+        }
+
+        function predloziNovuLok(){
+            var form = document.createElement("form");
+
+            var koord = document.createElement("input");
+            
+            form.method = "POST"
+            form.action = "/igrac/predloziNovuLokaciju"
+
+            koord.value = sessionStorage.getItem("koordinateIgraca");
+            sessionStorage.clear();
+            koord.name = "koordinate";
+            form.appendChild(koord)
+
+            document.body.appendChild(form)
+
+            form.submit()
+        }
+
+        //da mapa ili prati korisnika ili da ne prati - gumb
+        function ugasiPracenje(){
+            mymap.stopLocate()
+            document.getElementById("gasiPracenje").style.display = 'none'
+            document.getElementById("paliPracenje").style.display = 'block'
+        }
+        function upaliPracenje(){
+            mymap.locate({
+            setView: true,
+            watch: true
+            })
+            document.getElementById("paliPracenje").style.display = 'none'
+            document.getElementById("gasiPracenje").style.display = 'block'
+        }
+
+    </script>
+    
+</head>
+
+    
+
+<body>
+
+    
+         
+    <nav class="navbar fixed-top navbar-dark bg justify-content-end" style="pointer-events: none">        
+    <% if ( igrac.iskustvo > 4 ) { %>    
+        <a class="navbar-brand" style="pointer-events: visible"><button class="btn btn-secondary" onclick='predloziNovuLok()'>Predlozi Novu Lokaciju</button></a>
+    <% } %>
+        <a class="navbar-brand" style="pointer-events: visible" href="/igrac"><button type="button" class="btn btn-success btn-lg">Meni</button></a>
+        <a class="navbar-brand" style="pointer-events: visible" href="/igrac/upravljanjeKartama"><button type="button" class="btn btn-warning">Kolekcija</button></a>
+        <a class="navbar-brand" style="pointer-events: visible" href="/igrac/borba"><button type="button" class="btn btn-danger">Borba</button></a>
+        <a class="navbar-brand" style="pointer-events: visible" href="/pregledObavijesti"><button type="button" class="btn btn-info">Obavijesti</button></a>    
+        <a class="navbar-brand" style="pointer-events: visible; margin-right:0px;"><button class="btn btn-secondary" id="gasiPracenje" onclick='ugasiPracenje()'>Toggle pracenja</button></a>
+        <a class="navbar-brand" style="pointer-events: visible; margin-right:0px;"><button class="btn btn-outline-secondary" id="paliPracenje" onclick='upaliPracenje()' style='display:none;'>Toggle pracenja</button></a>
+        <a class="navbar-brand" style="pointer-events: visible; margin-left:1rem;" href="/logout"><button type="button" class="btn btn-dark">Logout</button></a>   
+    </nav>
+    
+
+     
+     <div id="mapid">
+
+     </div>       
+   
+    
+    <script>
+        var mymap = L.map('mapid').setView([45.813, 15.97734], 13);
+        L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+            maxZoom: 18,
+            id: 'mapbox/streets-v11',
+            tileSize: 512,
+            zoomOffset: -1,
+            accessToken: 'pk.eyJ1IjoicmVlY2t5MTIzIiwiYSI6ImNraDEzdXpiazAxbXIycW83bHZ1dm9peTkifQ.nNgLbuh6YSIRbMDHLOOYQg'
+        }).addTo(mymap);
+
+        //Trg Bana Jelacica - 45.813, 15.97734
+        var lokacijaIgraca = L.circle([45.813, 15.97734], {
+            color: 'blue',
+            fillColor: 'blue',  
+            fillOpacity: 1,
+            radius: 10
+        }).addTo(mymap);
+
+        //nekako malo zumirati mapu
+        mymap.locate({
+            setView: true,
+            watch: true
+        }).on("locationfound", e => {
+            lokacijaIgraca.setLatLng(e.latlng)
+            //je li tu potreban update() ??\
+            provjeraKartice(e.latlng.lat, e.latlng.lng)
+            sessionStorage.setItem("koordinateIgraca", e.latlng.lat + ', ' + e.latlng.lng)
+        }).on("locationerror", e => {
+            console.log(e.message);
+        })
+
+        let lokacije = <%- JSON.stringify(lokacije) %>
+
+        for (let lokacija of lokacije) { 
+            tmp = L.circle([lokacija.x, lokacija.y], {
+                color: 'red',
+                fillColor: 'red',  
+                fillOpacity: 1,
+                radius: 35
+                })
+            tmp.bindPopup(lokacija.imeLokacije);
+            tmp.addTo(mymap)
+        }
+
+    </script>
+        
+
+
+</body>
+</html>

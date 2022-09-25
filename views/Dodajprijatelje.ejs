@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+    
+<head>
+  <style>
+    tr:nth-child(even) {
+    background-color: rgb(255, 187, 0);
+    }
+    tr:nth-child(odd) {
+    background-color: rgb(255, 238, 0);
+  }
+  </style>
+   
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"> 
+    <title><%= title %></title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" type="text/css" href="./public/styles/main.css">
+</head>
+
+<header>
+
+    <div class=" d-flex  container-fluid justify-content-between" style="background-color: rgb(42, 165, 73);" role="group">
+      <a href="/igrac"><button type="button" class="btn btn-success btn-lg">Meni</button></a>
+      <a href="/igrac/map"><button type="button" class="btn btn-success btn-lg">Karta</button></a>
+      <a href="/igrac/upravljanjeKartama"><button type="button" class="btn btn-success btn-lg">Kolekcija</button></a>
+      <a href="/igrac/borba"><button type="button" class="btn btn-success btn-lg">Borba</button></a>
+      <a href="/pregledObavijesti"><button type="button" class="btn btn-success btn-lg">Obavijesti</button></a>
+      <a href="/logout"><button type="button " class="btn btn-success btn-lg">Logout</button> </a>
+    </div>
+</header>
+<body class="" style="background :url('../../images/284607.jpg') no-repeat center fixed;background-size: cover;">
+    
+    
+        <div class=" container">
+          <div class="d-flex justify-content-between">
+            <div> <a class="navbar-brand" style="pointer-events: visible" href="/ListaPrijatelja"> <button class="btn btn-outline-dark" >Lista prijatelja</button></a></div>
+            <div><a class="navbar-brand" style="pointer-events: visible" href=""><button class="btn btn-dark">Dodaj prijatelje</button></a></div>
+            <div> <a class="navbar-brand" style="pointer-events: visible" href="/Prihavtiprijatelje"> <button class="btn btn-outline-dark" >Prihavti prijatelje</button></a></div>
+          </div>
+            <table class="table" id="tablica">
+                  <!-- upisi username buraza -->
+                  <tr>
+                    <th scope="row" style="text-align: center;"><input type="text" name="username" id="username" placeholder="username" maxlength="40" minlength="4" class="input"></th>
+                    <th><button type="submit" class="button">Dodaj prijatelja</button></th>
+                  </tr>
+                  
+                  <!-- ispis ljudi unutar radiusa-->
+                  <tr>
+                  </tr>
+              </table> 
+            </div>
+</body>
+</html>

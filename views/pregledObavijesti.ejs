@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+    
+<head>
+  <style>
+    tr:nth-child(even) {
+    background-color: rgb(255, 187, 0);
+    }
+    tr:nth-child(odd) {
+    background-color: rgb(255, 238, 0);
+  }
+  </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"> 
+    <title><%= title %></title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    
+    <link rel="stylesheet" type="text/css" href="./public/styles/main.css">
+ 
+</head>
+
+<header style="position: sticky; top: 0;">
+  <div class="container-fluid d-flex flex-row " style=" background-color:orange;"
+    role="group">
+    <a href="/igrac"><button type="button" class="btn btn-danger btn-lg">Povratak</button></a>
+  </div>
+</header>
+
+<body style="background :url('../../images/284607.jpg') no-repeat center fixed;background-size: cover;">
+    
+  <div class=" container">
+  
+    <table class="table" id="tablica">
+      <thead class="thead-dark">
+        <tr>
+          <th>Vrijeme</th>
+          <th>Poruka</th>
+        </tr>
+      </thead>
+    <% for (let obavijest of obavijesti) { %>
+        <tr>
+            <th scope="row"><%= obavijest.vrijeme %></th>
+            <th><%= obavijest.tekst %></th>  
+        </tr>
+    <% } %>
+    </table> 
+  </div> 
+   
+</body>
+</html>

@@ -1,0 +1,96 @@
+    <!DOCTYPE html>
+    <html>
+
+    <head>
+        <title><%= title %></title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="./styles/igracMain.css">
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+
+    </head>
+
+    <body class="main" style="background :url('../../images/284607.jpg') no-repeat center fixed;background-size: cover; ">
+
+        <div class="container-fluid d-flex flex-row" style="height: 100%;">
+            <div class="d-flex flex-column karticaIgraca">
+                <div class="d-inline-flex justify-content-center"><img style="width: 100%;"
+                        src="../../images/slike/<%= igrac.foto%>" alt="slika igraca"></div>
+                <div class="justify-content-center d-inline-flex">Username: <%= igrac.username %> </div>
+                <div class="justify-content-center d-inline-flex">Elo: <%= igrac.elobodovi %> </div>
+                <div class="justify-content-center d-inline-flex">Iskustvo: <%= igrac.iskustvo %> </div>
+                
+            </div>
+            <div class="justify-content-center"
+                style="height: 100%; width: 26%; margin-left:8%; margin-right: 8%; margin-top: 7%; ">
+
+                <div class="d-flex flex-column justify-content-center align-items-center">
+                    <div class="menuItems d-inline-flex"><a class="d-inline-flex" href="igrac/map"><img class="close-image"
+                                alt="Responsive image" src="../../images/buttons/Mapa.png"></a></div>
+
+                    <div class="menuItems d-inline-flex"> <a class="d-inline-flex" href="/pregledObavijesti"><img
+                                class="close-image" alt="Responsive image" src="../../images/buttons/Obavijesti.png"></a>
+                    </div>
+
+               
+                
+
+                    <div class="menuItems d-inline-flex"><a href="igrac/upravljanjeKartama"><img class="close-image"
+                                alt="Responsive image" src="../../images/buttons/Kolekcija.png"></a></div>
+
+                
+
+                
+
+                    <div class="menuItems d-inline-flex"> <a href="igrac/borba"><img class="close-image"
+                                alt="Responsive image" src="../../images/buttons/Dvoboj.png"></a></div>
+
+                    <div class="menuItems d-inline-flex"><a href="/logout"><img class="close-image" alt="Responsive image"
+                                src="../../images/buttons/Logout2.png"></a></div>
+
+                </div>
+            </div>
+
+            <% if(strongCard) {%>
+            <div class="d-flex flex-column" style="height:100%; width:20%; margin-top: 5%; margin-left: 10%;">
+                <div class="fun-fact">
+
+                    <div class=" justify-content-center border border-success card <%if (strongCard.aktivna == 1) {%>  aktKarta <%}%>" style="background-color: aquamarine; display: flex;">
+                    <div>
+            <div class="text-center font-weight-bolder ">Najjaca skupljena kartica</div>
+            <img class="card-img-top border border-success card"  style=" width:100%; height: 100%px;"src="../../images/slike/<%= strongCard.foto %>.jpg"
+                        alt="Card image cap"></div>
+                    <div class="card-body">
+
+                        <div class="text-center font-weight-bolder "><%= strongCard.imeLokacije %></div>
+
+                        <div class="progress font-weight-bolder">
+                            <div class="progress-bar bg-warning" role="progressbar" style="width: <%= strongCard.snaga %>% "
+                                aria-valuenow="<%= strongCard.snaga %>" aria-valuemin="0" aria-valuemax="100">
+                                <%= strongCard.snaga %></div>
+                        </div>
+
+                        <br>
+                        <div class="progress font-weight-bolder">
+                            <div class="progress-bar bg-success" role="progressbar" style="width: <%= strongCard.hp %>%"
+                                aria-valuenow="<%= strongCard.hp %>" aria-valuemin="0" aria-valuemax="100">
+                                <%= strongCard.hp %>
+                            </div>
+                        </div>
+                    </div>
+                
+                </div>
+                <% } %>
+                <div class="d-flex flex-column justify-content-center">
+                    <a href="/eloTop100"><img class="logo-image-trophy" src="../images/trophy.png" alt="Top 100"></a>
+                    <div class="text-center font-weight-bold" style="font-size:25px; color:white">Top 100 igrača</div>
+                </div>
+            </div>
+
+        </div>
+        </div>
+
+    </body>
+
+    </html>

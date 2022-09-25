@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title><%= title%></title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="/styles/edit.css">
+
+    <script>
+        function uredivanje(id) {
+            //Uklanja tablicu da se ne vidi
+            document.getElementById("tablica1").style.display = 'none'
+            document.getElementById("tablica2").style.display = 'none'
+            document.getElementById("natpis1").style.display = 'none'
+            document.getElementById("natpis2").style.display = 'none'
+            document.getElementById("natpis3").style.display = 'none'
+            let dvoboj
+            let dvIz = <%- JSON.stringify(izazvan) %>
+            
+            for(let tmp of dvIz) {
+                if(tmp.idDvoboj == id){
+                    dvoboj = tmp;
+                    break;
+                }
+            }
+            
+            document.getElementById("uredivac").style.display = 'block'
+            document.getElementById("protivnik").value = dvoboj.idIzazivac;
+
+        }
+
+        function odustaniOdUredivanja() {
+            document.getElementById("uredivac").style.display = 'none'
+            document.getElementById("tablica1").style.display = 'table'
+            document.getElementById("tablica2").style.display = 'table'
+            document.getElementById("natpis1").style.display = 'block'
+            document.getElementById("natpis2").style.display = 'block'
+            document.getElementById("natpis3").style.display = 'block'
+        }
+
+        function rezultat(id) {
+            document.getElementById("tablica1").style.display = 'none'
+            document.getElementById("tablica2").style.display = 'none'
+            document.getElementById("natpis1").style.display = 'none'
+            document.getElementById("natpis2").style.display = 'none'
+            document.getElementById("natpis3").style.display = 'none'
+            document.getElementById("body").class = 'background-rezultat'
+            let rez = 0;
+
+            let bor = <%- JSON.stringify(borbe) %>;
+            let akitvniIgrac = <%- JSON.stringify(aktivniIgrac) %>;
+
+            if(bor) {
+                for(let borba of bor) {
+                    if(borba.idBorba == id) {
+                        if(borba.idIgracPobjednik == akitvniIgrac.idKorisnik) {
+                            rez = 1
+                        }else {
+                            rez = 0;
+                        }
+                        break
+                    }
+                }
+            }
+
+            document.getElementById("rezultat").style.display = 'block'
+
+            if(rez == 1) {
+                document.getElementById("rezultatText").innerHTML = "Cestitke pobjedili ste u dvoboju"
+            }else {
+                document.getElementById("rezultatText").innerHTML = "Nazalost, izgubili ste u dvoboju"
+            }
+
+        }
+
+        function povratak() {
+            document.getElementById("rezultat").style.display = 'none'
+            document.getElementById("tablica1").style.display = 'table'
+            document.getElementById("tablica2").style.display = 'table'
+            document.getElementById("natpis1").style.display = 'block'
+            document.getElementById("natpis2").style.display = 'block'
+            document.getElementById("natpis3").style.display = 'block'
+
+
+
+            document.getElementById("body").class = ''
+            
+        }
+        
+    </script>
+
+    <style>
+        tr:nth-child(even) {
+        background-color: rgb(255, 187, 0);
+        }
+        tr:nth-child(odd) {
+        background-color: rgb(255, 238, 0);
+        }  
+    </style>
+
+</head>
+
+<header style="position: sticky; top: 0;">
+
+    <div class=" d-flex  container-fluid justify-content-between" style="background-color: rgb(42, 165, 73);"
+        role="group">
+        <a href="/igrac"><button type="button" class="btn btn-success btn-lg">Meni</button></a>
+        <a href="/igrac/map"><button type="button" class="btn btn-success btn-lg">Karta</button></a>
+        <a href="/igrac/upravljanjeKartama"><button type="button" class="btn btn-success btn-lg">Kolekcija</button></a>
+        <a href="/pregledObavijesti"><button type="button" class="btn btn-success btn-lg">Obavijesti</button></a>
+        
+        <a href="/logout"><button type="button " class="btn btn-success btn-lg">Logout</button> </a>
+    </div>
+</header>
+
+<body id="body">
+
+    <% if(dovrseni) {%>
+        <% let rez; %>
+        <% for(let dvoboj of dovrseni) {%>
+            <% for(let borba of borbe) {%>
+                <% if(borba.idBorba == dvoboj.idBorba) {%>
+                    <% rez = borba; %>
+                    <% break; %>
+                <% } %>    
+            <% } %>  
+            
+            <% if(rez.idIgracPobjednik == aktivniIgrac.idKorisnik) {%>
+                <% console.log("Cestitamo pobijedili ste u dvoboju " + rez.idBorba) %>
+            <% }else { %>
+                <% console.log("Nazalost, izgubili ste u dvoboju " + rez.idBorba) %>
+            <% } %>
+        <% } %>
+    <% } %>
+
+    <h1 id="natpis1">OTVORENI IZAZOVI:</h2>
+    <table class="table" id="tablica1">
+        <thead class="thead-dark">
+            <tr>
+                <th>Protivnik</th>
+                <th>Elo</th>
+                <th>Iskustvo</th>
+                <th></th>
+            </tr>
+            </thead>
+    <% let igrac; %>
+    <% if(izazvan) { %>
+        <% for (let dvoboj of izazvan) { %>
+            <% for(let tmpIgr of igraci) { %>
+                <% if(tmpIgr.idKorisnik == dvoboj.idIzazivac) {%>
+                    <% igrac = tmpIgr; %>
+                    <% break; %>
+                <% } %>
+            <% } %>
+            <tr style="background-color: saddlebrown;"> 
+                <th><%= igrac.username %></th>
+                <th><%= igrac.elobodovi %></th>  
+                <th><%= igrac.iskustvo %></th>
+                <th><button class="btn btn-dark" onClick="uredivanje(<%= dvoboj.idDvoboj %>)">Prihvati</button></th>
+            </tr>
+        <% } %>
+    <% } %>
+    <% if(izazivac != null) { %>
+        <% for (let dvoboj of izazivac) { %>
+            <% for(let tmpIgr of igraci) { %>
+                <% if(tmpIgr.idKorisnik == dvoboj.idIzazvan) {%>
+                    <% igrac = tmpIgr; %>
+                    <% break; %>
+                <% } %>
+            <% } %>
+            <tr style="background-color: bisque;">
+                <th><%= igrac.username %></th>
+                <th><%= igrac.elobodovi %></th>  
+                <th><%= igrac.iskustvo %></th>
+                <th></th>
+            </tr>
+        <% } %>
+    <% } %>
+
+    <% if(dovrseni != null) { %>
+        <% for (let dvoboj of dovrseni) { %>
+            <% for(let tmpIgr of igraci) { %>
+                <% if(tmpIgr.idKorisnik == dvoboj.idIzazvan) {%>
+                    <% igrac = tmpIgr; %>
+                    <% break; %>
+                <% } %>
+            <% } %>
+            <tr style="background-color: hotpink;">
+                <th><%= igrac.username %></th>
+                <th><%= igrac.elobodovi %></th>  
+                <th><%= igrac.iskustvo %></th>
+                <th><button class="btn btn-dark" onClick="rezultat(<%= dvoboj.idBorba %>);">Pogledaj Rezultat</button></th>
+            </tr>
+        <% } %>
+    <% } %>
+
+    </table>
+
+    <a id="natpis2" href="/igrac/borba/zahtjev"><button class="btn btn-warning">Izazovi Nekoga</button></a>
+
+    <br>
+    <br>
+
+    <h1 id="natpis3">PROŠLE BORBE:</h2>
+    <table class="table" id="tablica2">
+        <thead class="thead-dark">
+            <tr>
+                <th>Vrijeme</th>
+                <th>BorbaID</th>
+                <th>Protivnik</th>
+                <th>Pobjednik</th>
+            </tr>
+            </thead>
+    
+    <% if(borbe) { %>
+        <% let pobjednik, gubitnik; %>
+        <% for (let borba of borbe) { %>
+            <% for(let tmpIgr of igraci) { %>
+                <% if(tmpIgr.idKorisnik == borba.idIgracPobjednik) {%>
+                    <% pobjednik = tmpIgr; %>
+                    <% break; %>
+                <% } %>
+            <% } %>
+            <% for(let tmpIgr of igraci) { %>
+                <% if(tmpIgr.idKorisnik == borba.idIgracGubitnik) {%>
+                    <% gubitnik = tmpIgr; %>
+                    <% break; %>
+                <% } %>
+            <% } %>
+
+            <% if(pobjednik.idKorisnik != aktivniIgrac.idKorisnik) { %>
+                <tr style="background-color: crimson;"> 
+                    <th><%= borba.vrijeme %></th>
+                    <th><%= borba.idBorba %></th>
+                    <th><%= pobjednik.username %></th>  
+                    <th><%= pobjednik.username %></th>
+                </tr>
+            <% }else {  %>
+                <tr style="background-color: green;"> 
+                    <th><%= borba.vrijeme %></th>
+                    <th><%= borba.idBorba %></th>
+                    <th><%= gubitnik.username %></th>  
+                    <th><%= pobjednik.username %></th>
+                </tr>
+            <% } %>
+        <% } %>
+    <% } %>
+    </table>
+
+
+    <div id="uredivac" class="uredivac" style='display:none'>
+        <form action="/igrac/borba" method="post">
+            <fieldset>
+                <legend>Odabir karti za dvoboj</legend>
+                <label for="karta1">Pick your 1. card: </label>
+                <select name="karta1" id="karta1">
+                    <% for( karta of karte) { %>
+                    <option value="<%= karta.imeLokacije%>"> <%= karta.imeLokacije%> </option>
+                    <% } %>
+
+                </select>
+                <br>
+                <br>
+                <label for="karta2">Pick your 2. card: </label>
+                <select name="karta2" id="karta2">
+                    <% for( karta of karte) { %>
+                    <option value="<%= karta.imeLokacije%>"> <%= karta.imeLokacije%> </option>
+                    <% } %>
+
+                </select>
+                <br>
+                <br>
+                <label for="karta3">Pick your 3. card: </label>
+                <select name="karta3" id="karta3">
+                    <% for( karta of karte) { %>
+                    <option value="<%= karta.imeLokacije%>"> <%= karta.imeLokacije%> </option>
+                    <% } %>
+
+                </select>
+
+                <input hidden type="text" name="protivnik" id="protivnik" readonly="readonly">
+                <br>
+                <br>
+
+                <button type="submit" class="button">Battle</button>
+                <button type="button" class="button" onClick="odustaniOdUredivanja()">Odustani</button>
+            </fieldset>
+        </form>
+    </div>
+
+    <div id="rezultat" class="background-rezultat" style='display:none'>
+            <p id="rezultatText"></p>
+            <a onclick="povratak()"><button class="btn btn-light">Povratak</button></a>
+    </div>
+
+</body>
+
+</html>

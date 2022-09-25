@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+    
+<head>
+   
+
+    <title><%= title %></title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    
+    <script>
+        function uredivanje(id) {
+            document.getElementById("tablica").style.display = 'none'
+            let kartograf
+            let kartografi = <%- JSON.stringify(kartografi) %>
+            let idAdmin
+            
+            for(let tmp of kartografi) {
+                if(tmp.idKorisnik == id){
+                    kartograf = tmp
+                    break
+                }
+            }
+
+            if(kartograf.idAdministrator != null) {
+                idAdmin = 'DA'
+            } else {
+                idAdmin = 'NE'
+            }
+            
+            document.getElementById("uredivac").style.display = 'block'
+
+            document.getElementById("idKorisnik").value = kartograf.idKorisnik
+            document.getElementById("username").value = kartograf.username
+            document.getElementById("email").value = kartograf.email
+            document.getElementById("password").value = kartograf.password
+            document.getElementById("foto").value = kartograf.foto
+            document.getElementById("aktivan").value = kartograf.aktivan
+            document.getElementById("role").value = kartograf.role
+            document.getElementById("idAdministrator").value = idAdmin
+            document.getElementById("IBAN").value = kartograf.iban
+            document.getElementById("fotoOsobne").value = kartograf.fotoOsobne
+
+        }
+
+        function odustaniOdUredivanja() {
+            document.getElementById("uredivac").style.display = 'none'
+            document.getElementById("tablica").style.display = 'table'
+        }
+        
+    </script>
+    <style>
+        tr:nth-child(even) {
+        background-color: rgb(255, 187, 0);
+        }
+        tr:nth-child(odd) {
+        background-color: rgb(255, 238, 0);
+        }  
+    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"> 
+    <title><%= title %></title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" type="text/css" href="/styles/edit.css">
+</head>
+
+<body class=" container" style="background :url('../../images/284607.jpg') no-repeat center fixed;background-size: cover;">
+    
+    <a href="/admin"><button class="btn btn-danger">Povratak</button></a>
+    <table class="table" id="tablica">
+        <thead class="thead-dark">
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Aktivan</th>
+                <th>Potvrđen</th>
+                <th>Role</th>
+                <th></th>
+            </tr>
+            </thead>
+    <% for (let kartograf of kartografi) { %>
+        <tr>
+            <th><%= kartograf.idKorisnik %></th>
+            <th><%= kartograf.username %></th>  
+            <th><%= kartograf.email %></th>
+            <th><%= kartograf.aktivan %></th>
+            <th>
+                <% if(kartograf.idAdministrator){%>
+                    DA (<%=kartograf.idAdministrator%>)
+                    <%} else { %>
+                        NE
+                    <% } %>     
+                </th>
+            <th><%= kartograf.role %></th>
+            <th><button class="btn btn-dark" onClick="uredivanje(<%= kartograf.idKorisnik %>)">Uredi</button></th>
+        </tr>
+    <% } %>
+    </table>
+    <div id="uredivac" class="editor" style='display:none'>
+        <form action="/admin/listakartografa" method="post">
+            <fieldset>
+                <legend>Izmjena podataka kartografa</legend>
+                <label for="idKorisnik">idKorisnik:</label>
+                <input type="text" name="idKorisnik" id="idKorisnik" maxlength="20" minlength="0" readonly="readonly">
+                <br>
+                <br>
+                <label for="username">Username:</label>
+                <input type="text" name="username" id="username" minlength="5">
+                <br>
+                <br>
+                <label for="email">Email:</label>
+                <input type="text" name="email" id="email" minlength="5">
+                <br>
+                <br>
+                <label for="password">Password:</label>
+                <input type="text" id="password" name="password">
+                <br>
+                <br>
+                <label for="foto">Foto:</label>
+                <input type="text" name="foto" id="foto" minlength="0">
+                <br>
+                <br>
+                <label for="aktivan">Aktivan:</label>
+                <input type="text" name="aktivan" id="aktivan" minlength="0">
+                <br>
+                <br>
+                <label for="role">Role:</label>
+                <input type="text" name="role" id="role" minlength="0" readonly="readonly">
+                <br>
+                <br>
+                <label for="idAdministrator">Potvrđen:</label>
+                <!-- <input type="text" name="idAdministrator" id="idAdministrator" maxlength="20" minlength="0"> -->
+                <select id="idAdministrator" name="idAdministrator">
+                    <option value="DA">DA</option>
+                    <option value="NE">NE</option>
+                </select>
+                <br>
+                <br>
+                <label for="IBAN">IBAN:</label>
+                <input type="text" name="IBAN" id="IBAN" minlength="10" maxlength="21">
+                <br>
+                <br>
+                <label for="photoID">Foto Osobne:</label>
+                <input type="text" id="fotoOsobne" name="fotoOsobne">
+
+                <br>
+                <br>
+                <button type="submit" class="button">Izmijeni</button>
+                <button type="button" class="button" onClick="odustaniOdUredivanja()">Odustani</button>
+            </fieldset>
+        </form>
+    </div>
+
+    
+   
+</body>
+</html>

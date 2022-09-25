@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+    
+<head>
+   
+
+    <title><%= title %></title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"> 
+    <link rel="stylesheet" type="text/css" href="/styles/edit.css">
+    
+    <script>
+        function uredivanje(koordinate) {
+            //Uklanja tablicu da se ne vidi
+            document.getElementById("tablica").style.display = 'none'
+            let odabrana;
+            //TESTIRATI BEZ <% %>
+            let karte = <%- JSON.stringify(karte) %>
+
+            for(let tmp of karte) {
+                if(tmp.koordinate == koordinate){
+                    odabrana = tmp;
+                    break;
+                }
+            }
+
+            let idKartog
+            if(odabrana.idKartograf){
+                idKartog = 'DA'
+            } else {
+                idKartog = 'NE'
+            }
+            
+            document.getElementById("uredivac").style.display = 'block'
+            
+
+            document.getElementById("koordinate").value = odabrana.koordinate
+            document.getElementById("imelokacije").value = odabrana.imeLokacije
+            document.getElementById("opis").value = odabrana.opis
+            document.getElementById("idKartograf").value = idKartog
+            document.getElementById("foto").value = odabrana.foto
+            document.getElementById("snaga").value = odabrana.snaga
+        }
+
+        function odustaniOdUredivanja() {
+            document.getElementById("uredivac").style.display = 'none'
+            document.getElementById("tablica").style.display = 'table'
+        }
+        
+    </script>
+    <style>
+        tr:nth-child(even) {
+        background-color: rgb(255, 187, 0);
+        }
+        tr:nth-child(odd) {
+        background-color: rgb(255, 238, 0);
+        }
+    </style>
+</head>
+
+<body class=" container" style="background :url('../../images/284607.jpg') no-repeat center fixed;background-size: cover;">
+    
+    <a href="/kartograf"><button class="btn btn-danger">Povratak</button></a>
+    <table class="table" id="tablica">
+        <thead class="thead-dark">
+            <tr>
+                <th>Koordinate</th>
+                <th>Ime Lokacije</th>
+                <th>Opis</th>
+                <th>Potvrđena</th>
+                <th>Foto</th>
+                <th>Snaga</th>
+                <th></th>
+            </tr>
+        </thead>
+    <% for (let karta of karte) { %>
+        <tr>
+            <th><%= karta.koordinate %></th>
+            <th><%= karta.imeLokacije %></th>  
+            <th><%= karta.opis %></th>
+            <th>
+            <% if(karta.idKartograf){%>
+                DA (<%=karta.idKartograf%>)
+                <%} else { %>
+                    NE
+                <% } %>     
+            </th>
+            <th><%= karta.foto %></th>
+            <th><%= karta.snaga %></th>
+            <!-- uredivanje(<%= karta.koordinate %> -->
+            <th><button class="btn btn-dark" onClick='uredivanje("<%= karta.koordinate %>")'>Uredi</button></th>
+        </tr>
+    <% } %>
+    </table>
+    <div id="uredivac" class="editor" style='display:none'>
+        <form action="/kartograf/listaKarti" method="post">
+            <fieldset>
+                <legend>Izmjena podataka Karti</legend>
+                <label for="koordinate">Koordinate:</label>
+                <input type="text" name="koordinate" id="koordinate" maxlength="30" minlength="0" readonly="readonly">
+                <br>
+                <br>
+                <label for="imelokacije">Ime Lokacije:</label>
+                <input type="text" name="imelokacije" id="imelokacije" minlength="5">
+                <br>
+                <br>
+                <label for="opis">Opis:</label>
+                <input type="text" name="opis" id="opis" minlength="5">
+                <br>
+                <br>
+                <label for="idkartograf">Lokacija potvrđena:</label>
+                <!-- <input type="text" id="idkartograf" name="idkartograf"> -->
+                <select id="idKartograf" name="idKartograf">
+                    <option value="DA">DA</option>
+                    <option value="NE">NE</option>
+                </select>
+                <br>
+                <br>
+                <label for="foto">Foto:</label>
+                <input type="text" name="foto" id="foto" minlength="0">
+                <br>
+                <br>
+                <label for="snaga">Snaga:</label>
+                <input type="text" name="snaga" id="snaga" minlength="0">
+                <br>
+
+                <button type="submit" class="button">Izmijeni</button>
+                <button type="button" class="button" onClick="odustaniOdUredivanja()">Odustani</button>
+            </fieldset>
+        </form>
+    </div>
+
+    
+   
+</body>
+</html>

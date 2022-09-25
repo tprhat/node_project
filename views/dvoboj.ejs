@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <style>
+        .loginbox {
+    height: 430px;
+    width: 400px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    border: 2px solid darkblue;
+    background-color: #E1770C;
+    padding: 10px;
+    z-index: 1;
+}
+    </style>
+
+    <title><%= title%></title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<header>
+
+    <div class=" d-flex  container-fluid justify-content-between" style="background-color: rgb(42, 165, 73);"
+        role="group">
+        <a href="/igrac"><button type="button" class="btn btn-success btn-lg">Meni</button></a>
+        <a href="/igrac/map"><button type="button" class="btn btn-success btn-lg">Mapa</button></a>
+        <a href="/igrac/upravljanjeKartama"><button type="button" class="btn btn-success btn-lg">Kolekcija</button></a>
+        <a href="/pregledObavijesti"><button type="button" class="btn btn-success btn-lg">Obavijesti</button></a>
+        <a href="/logout"><button type="button"  class="btn btn-success btn-lg">Logout</button> </a>
+    </div>
+</header>
+
+<body style="background :url('../../images/284607.jpg') no-repeat center fixed;background-size: cover; ">
+
+    <div class="loginbox justify-content-center align-content-center text-center" id="login ">
+            <fieldset>
+                <div class="">
+                    <h1>
+                        Prepare for battle
+                    </h1>
+                </div>
+        
+                    <div class="" style="overflow-y: auto ; max-height: 84vh;">
+        
+        
+                        <form action="/igrac/borba/zahtjev" method="post">
+                            <fieldset>
+                                <label for="odabir protivnika">Challenge: </label>
+                                <select name="protivnik" id="protivnik">
+                                    <% for( igrac of igraci) { %>
+                                    <% if (igrac.username != username) {%>
+                                    <option value="<%= igrac.username%>"> <%= igrac.username%></option>
+                                    <% } %>
+                                    <% } %>
+                                </select>
+                                <br>
+                                <br>
+                                <label for="karta1">Pick your 1. card: </label>
+                                <select name="karta1" id="karta1">
+                                    <% for( karta of karte) { %>
+                                    <option value="<%= karta.imeLokacije%>"> <%= karta.imeLokacije%> </option>
+                                    <% } %>
+        
+                                </select>
+                                <br>
+                                <br>
+                                <label for="karta2">Pick your 2. card: </label>
+                                <select name="karta2" id="karta2">
+                                    <% for( karta of karte) { %>
+                                    <option value="<%= karta.imeLokacije%>"> <%= karta.imeLokacije%> </option>
+                                    <% } %>
+        
+                                </select>
+                                <br>
+                                <br>
+                                <label for="karta3">Pick your 3. card: </label>
+                                <select name="karta3" id="karta3">
+                                    <% for( karta of karte) { %>
+                                    <option value="<%= karta.imeLokacije%>"> <%= karta.imeLokacije%> </option>
+                                    <% } %>
+        
+                                </select>
+                                <br><br>
+                                <button type="submit" class="btn btn-danger">Battle</button>
+                            </fieldset>
+                        </form>
+                    </div>
+            </fieldset>
+    </div>
+</body>
+
+</html>
